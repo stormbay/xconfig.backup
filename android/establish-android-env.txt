@@ -1,0 +1,56 @@
+
+1. Install JDK
+
+	Ubuntu 14.04
+	http://archive.ubuntu.com/ubuntu/pool/universe/o/openjdk-7/openjdk-7-jre-headless_7u101-2.6.6-0ubuntu0.12.04.1_amd64.deb
+	http://archive.ubuntu.com/ubuntu/pool/universe/o/openjdk-7/openjdk-7-jre_7u101-2.6.6-0ubuntu0.12.04.1_i386.deb
+	http://archive.ubuntu.com/ubuntu/pool/universe/o/openjdk-7/openjdk-7-jdk_7u101-2.6.6-0ubuntu0.12.04.1_amd64.deb
+	Ubuntu >= 15.04
+	http://archive.ubuntu.com/ubuntu/pool/universe/o/openjdk-8/
+
+	sudo apt-get update
+	sudo dpkg -i xxxx.deb
+	sudo apt-get -f install  (to fix missing dependencies)
+
+	sudo update-alternatives --config java
+	sudo update-alternatives --config javac
+
+2.	Install required packages
+
+	sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip
+
+3.	Config USB Access
+	wget -S -O - http://source.android.com/source/51-android.rules | sed "s/<username>/$USER/" | sudo tee >/dev/null /etc/udev/rules.d/51-android.rules; sudo udevadm control --reload-rules
+
+4.	Repo & Git
+
+	$ mkdir ~/bin
+	$ PATH=~/bin:$PATH
+
+	$ curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+	$ chmod a+x ~/bin/repo
+
+	$ git config --global user.name "Your Name"
+	$ git config --global user.email "you@example.com"
+
+5.	Download
+
+	repo init -u https://android.googlesource.com/platform/manifest
+	or
+	repo init -u https://android.googlesource.com/platform/manifest -b android-4.0.1_r1
+
+	repo sync
+
+6.	CodeAurora.org
+
+	$ repo init -u git://codeaurora.org/platform/manifest.git -b [branch] -m [manifest] --repo-url=git://codeaurora.org/tools/repo.git --repo-branch=aosp-new/stable
+	[Use China Mirror]
+	$ repo init -u https://source.codeaurora.org/platform/manifest.git -b [branch] -m [manifest] --repo-url=https://source.codeaurora.org/tools/repo.git --repo-branch=aosp-new/stable
+
+	$ repo sync
+
+	[Manifest release List]
+	https://wiki.codeaurora.org/xwiki/bin/QAEP/release
+
+	$ repo init -u https://source.codeaurora.org/platform/manifest.git -b release -m LA.UM.5.3.c3-00900-89xx.0.xml --repo-url=https://source.codeaurora.org/tools/repo.git --repo-branch=aosp-new/stable
+
