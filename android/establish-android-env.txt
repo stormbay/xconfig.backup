@@ -2,6 +2,11 @@
 1. Install JDK
 
 	Ubuntu 14.04
+
+	sudo apt-get install openjdk-7-jre-headless 
+	sudo apt-get install openjdk-7-jre
+	sudo apt-get install openjdk-7-jdk
+	or
 	http://archive.ubuntu.com/ubuntu/pool/universe/o/openjdk-7/openjdk-7-jre-headless_7u101-2.6.6-0ubuntu0.12.04.1_amd64.deb
 	http://archive.ubuntu.com/ubuntu/pool/universe/o/openjdk-7/openjdk-7-jre_7u101-2.6.6-0ubuntu0.12.04.1_i386.deb
 	http://archive.ubuntu.com/ubuntu/pool/universe/o/openjdk-7/openjdk-7-jdk_7u101-2.6.6-0ubuntu0.12.04.1_amd64.deb
