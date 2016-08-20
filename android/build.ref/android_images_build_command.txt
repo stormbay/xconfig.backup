@@ -1,0 +1,70 @@
+
+
+Target ram disk: out/target/product/msm8953_64/ramdisk.img
+out/host/linux-x86/bin/mkbootfs -d out/target/product/msm8953_64/system out/target/product/msm8953_64/root | out/host/linux-x86/bin/minigzip > out/target/product/msm8953_64/ramdisk.img
+
+
+Target boot image: out/target/product/msm8953_64/boot.img
+out/host/linux-x86/bin/mkbootimg  --kernel out/target/product/msm8953_64/kernel --ramdisk out/target/product/msm8953_64/ramdisk.img --cmdline "console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 androidboot.bootdevice=7824900.sdhci earlycon=msm_hsl_uart,0x78af000" --base 0x80000000 --pagesize 2048  --output out/target/product/msm8953_64/boot.img
+out/host/linux-x86/bin/boot_signer /boot out/target/product/msm8953_64/boot.img build/target/product/security/verity.pk8 build/target/product/security/verity.x509.pem out/target/product/msm8953_64/boot.img
+out/target/product/msm8953_64/boot.img maxsize=68395008 blocksize=135168 total=21851432 reserve=811008
+
+
+Target system fs image: out/target/product/msm8953_64/obj/PACKAGING/systemimage_intermediates/system.img
+Running:  mkuserimg.sh -s out/target/product/msm8953_64/system out/target/product/msm8953_64/obj/PACKAGING/systemimage_intermediates/system.img ext4 system 3195826176 -D out/target/product/msm8953_64/system -L system out/target/product/msm8953_64/root/file_contexts
+make_ext4fs -s -T -1 -S out/target/product/msm8953_64/root/file_contexts -L system -l 3195826176 -a system out/target/product/msm8953_64/obj/PACKAGING/systemimage_intermediates/system.img out/target/product/msm8953_64/system out/target/product/msm8953_64/system
+Creating filesystem with parameters:
+    Size: 3195826176
+    Block size: 4096
+    Blocks per group: 32768 
+    Inodes per group: 8128
+    Inode size: 256
+    Journal blocks: 12191 
+    Label: system
+    Blocks: 780231
+    Block groups: 24
+    Reserved block group size: 191
+Created filesystem with 2215/195072 inodes and 241156/780231 blocks
+build_verity_tree -A aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 out/target/product/msm8953_64/obj/PACKAGING/systemimage_intermediates/system.img /tmp/tmp4Ph2cZ_verity_images/verity.img
+system/extras/verity/build_verity_metadata.py 3195826176 /tmp/tmp4Ph2cZ_verity_images/verity_metadata.img 1a604f468521851a13392e743d8dabc77542a35b7a20d5460cd7286bcf6fe17e aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 /dev/block/bootdevice/by-name/system out/host/linux-x86/bin/verity_signer build/target/product/security/verity.pk8
+append2simg out/target/product/msm8953_64/obj/PACKAGING/systemimage_intermediates/system.img /tmp/tmp4Ph2cZ_verity_images/verity_metadata.imgappend2simg out/target/product/msm8953_64/obj/PACKAGING/systemimage_intermediates/system.img /tmp/tmp4Ph2cZ_verity_images/verity.img
+Install system fs image: out/target/product/msm8953_64/system.img
+out/target/product/msm8953_64/system.img+out/target/product/msm8953_64/obj/PACKAGING/recovery_patch_intermediates/recovery_from_boot.p maxsize=3288637440 blocksize=135168 total=961670682 reserve=33251328
+
+
+Target userdata fs image: out/target/product/msm8953_64/userdata.img
+Running:  mkuserimg.sh -s out/target/product/msm8953_64/data out/target/product/msm8953_64/userdata.img ext4 data 9999220736 -D out/target/product/msm8953_64/system -L data out/target/product/msm8953_64/root/file_contexts
+make_ext4fs -s -T -1 -S out/target/product/msm8953_64/root/file_contexts -L data -l 9999220736 -a data out/target/product/msm8953_64/userdata.img out/target/product/msm8953_64/data out/target/product/msm8953_64/system
+Creating filesystem with parameters:
+    Size: 9999220736
+    Block size: 4096
+    Blocks per group: 32768
+    Inodes per group: 8144
+    Inode size: 256
+    Journal blocks: 32768
+    Label: data
+    Blocks: 2441216
+    Block groups: 75
+    Reserved block group size: 599
+Created filesystem with 129/610800 inodes and 77014/2441216 blocks
+out/target/product/msm8953_64/userdata.img maxsize=10208563200 blocksize=135168 total=141545028 reserve=103133184
+
+
+Target cache fs image: out/target/product/msm8953_64/cache.img
+Running:  mkuserimg.sh -s out/target/product/msm8953_64/cache out/target/product/msm8953_64/cache.img ext4 cache 268435456 -D out/target/product/msm8953_64/system -L cache out/target/product/msm8953_64/root/file_contexts
+make_ext4fs -s -T -1 -S out/target/product/msm8953_64/root/file_contexts -L cache -l 268435456 -a cache out/target/product/msm8953_64/cache.img out/target/product/msm8953_64/cache out/target/product/msm8953_64/system
+Creating filesystem with parameters:
+    Size: 268435456
+    Block size: 4096
+    Blocks per group: 32768
+    Inodes per group: 8192
+    Inode size: 256
+    Journal blocks: 1024
+    Label: cache
+    Blocks: 65536
+    Block groups: 2
+    Reserved block group size: 15
+Created filesystem with 11/16384 inodes and 2089/65536 blocks
+
+out/target/product/msm8953_64/cache.img maxsize=273985536 blocksize=135168 total=6398160 reserve=2838528
+
