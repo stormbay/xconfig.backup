@@ -1,0 +1,53 @@
+服务器端：
+
+apt-get install ssh
+
+编辑/etc/ssh/sshd_config
+#ServerKeyBits 768　← 找到这一行，将行首的“#”去掉，并将768改为1024
+
+ServerKeyBits 1024　← 修改后变为此状态，将ServerKey强度改为1024比特
+
+PermitRootLogin yes 　← 找到这一行，将行首的“#”去掉，并将yes改为no
+
+PermitRootLogin no 　← 修改后变为此状态，不允许用root进行登录
+
+PermitEmptyPasswords no　 ← 找到此行“#”删除，不允许空密码登录
+
+PermitEmptyPasswords no　 ← 修改后变为此状态，禁止空密码进行登录
+
+#PasswordAuthentication yes　← 找到这一行，将yes改为no
+
+PasswordAuthentication no　← 修改后变为此状态，不允许密码方式的登录
+
+以普通用户的身份建立公钥和私钥：
+ssh-keygen -t rsa
+然后要求你确认钥匙的文件名(用默认的就好了)；输入口令；再次输入口令。
+
+在~/.ssh/下会生成公钥id_rsa.pub和私钥id_rsa
+
+更改公钥文件名：mv id_rsa.pub authorized_keys
+设置文件属性：chmod 400 authorized_keys
+
+重启ssh服务：/etc/init.d/ssh restart
+
+将私钥id_rsa移动到客户机端
+
+客户机端：
+
+apt-get install ssh
+mkdir ~/.ssh/
+chown user:user ~/.ssh/
+chmod 700 ~/.ssh/
+将私钥文件移动到~/.ssh/中
+chown root:root ~/.ssh/id_rsa
+chmod 644 ~/.ssh/id_rsa
+
+
+ssh登录方法：
+ssh 远程主机的用户名＠远程主机的IP地址
+输入口令
+
+=======================================
+更改公钥文件名：mv id_rsa.pub authorized_keys
+必须做.
+另外我在Windows下用sCRT导入的是公钥不是私钥....

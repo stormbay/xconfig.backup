@@ -1,0 +1,102 @@
+ubuntu下NFS的配置 
+
+nfs安装(1)
+? apt-get install nfs-kernel-server
+? apt-get install portmapnfs-common
+
+Ubuntu上默认是没有安装Ubuntu nfs服务器的，因此我们首先安装Ubuntu nfs服务器端：
+	$ sudo apt-get install nfs-kernel-server 
+在一些文档中，提出还需要使用apt-get来手动安装nfs的客户端nfs-common，以及端口映射器portmap，但其实这是没有必要的，因为在安装nfs-kernel-server时，apt会自动为我们把它们安装好。
+
+(2) 
+编辑 /etc/exports 
+/home/jgyang/nfsroot *(rw,sync,no_root_squash) 
+
+Ubuntu nfs允许挂载的目录及权限在文件/etc/exports中进行了定义。 
+例如，我们要将根目录下的rootfs目录共享出来，那么我们需要在/etc/exports文件末尾添加如下一行：
+	/rootfs *(rw,sync,no_root_squash) 
+其中：/rootfs是要共享的目录，*代表允许所有的网络段访问，rw是可读写权限,sync是资料同步写入内存和硬盘，no_root_squash是Ubuntunfs客户端分享目录使用者的权限，如果客户端使用的是root用户，那么对于该共享目录而言，该客户端就具有root权限。
+
+其它Ubuntunfs常用的参数有：
+ro	只读访问 
+rw	读写访问sync所有数据在请求时写入共享
+async nfs	在写入数据前可以响应请求 
+secure nfs	通过1024以下的安全TCP/IP端口发送
+insecure nfs	通过1024以上的端口发送 
+wdelay	如果多个用户要写入nfs目录，则归组写入（默认） 
+no_wdelay	如果多个用户要写入nfs目录，则立即写入，当使用async时，无需此设置。
+hide	在nfs共享目录中不共享其子目录
+no_hide	共享nfs目录的子目录 
+subtree_check	如果共享/usr/bin之类的子目录时，强制nfs检查父目录的权限（默认）
+no_subtree_check	和上面相对，不检查父目录权限 
+all_squash	共享文件的UID和GID映射匿名用户anonymous，适合公用目录。
+no_all_squash	保留共享文件的UID和GID（默认） 
+root_squashroot	用户的所有请求映射成如anonymous用户一样的权限（默认）
+no_root_squasroot	用户具有根目录的完全管理访问权限 
+anonuid=xxx	指定nfs服务器/etc/passwd文件中匿名用户的UID
+anongid=xxx	指定nfs服务器/etc/passwd文件中匿名用户的GID
+
+(3) 
+修改挂载点的属性 
+chmod 777 /home/jgyang/rootfs
+
+(4)
+重启nfs 
+sudo /etc/init.d/nfs-kernel-serverrestart
+sudo /etc/init.d/portmaprestart
+
+(5) 
+在本机上测试
+showmount -e 
+mount 172.20.149.190:/home/jgyang/nfsroot/mntls-l  /mnt 
+
+注：可以通过一个符号链接来exportNFS目录，但在/etc/exports下所添加的挂载点应为真正的目录。比如建一符号链接
+	 ln  -s  /home/pub/work/freerunner/out/target/product/freerunner  /home/jgyang/nfsroot&#160; 
+这样在开发板上设置的内核命令行中设置的NFS目录就可是：/home/jgyang/nfsroot,但在/etc/exports文件中export出的目录应当是实际的NFS所在的目录，即/home/pub/work/freerunner/out/target/product/freerunner。 
+这样有两个好处，一是可以省去开发板中启动参数命令过长的麻烦;二是在重新编译android之后可以直接使用生成的NFS，而不必再重新拷贝一份。
+
+
+Ubuntu 14.04下NFS安装配置
+
+参考：http://www.linuxidc.com/Linux/2013-08/89154.htm
+
+1、执行命令：sudo apt-get install nfs-kernel-server ;
+2、执行命令：mkdir /home/jacobxu/nfs-jacoxu 建立一个nfs服务的专有的文件夹;
+3、建立好文件夹后，接着执行命令：sudo vi /etc/exports 配置nfs;
+4、在文章的最后一行添加：/home/jacobxu/nfs-jacoxu *(rw,sync,no_root_squash,no_subtree_check)
+/home/jacobxu/nfs-jacoxu *(rw,sync,no_root_squash,no_subtree_check)这一行的含义是：
+/home/jacobxu/nfs-jacoxu：与nfs服务客户端共享的目录，这个路径必须和你前面设置的文件的路径一致！
+*：允许所有的网段访问，也可以使用具体的IP
+rw：挂接此目录的客户端对该共享目录具有读写权限
+sync：资料同步写入内存和硬盘
+no_root_squash：root用户具有对根目录的完全管理访问权限。
+no_subtree_check：不检查父目录的权限。
+5、修改完上述配置文件保存退出。
+6、执行命令：sudo /etc/init.d/rpcbind restart 重启rpcbind 服务。nfs是一个RPC程序，使用它前，需要映射好端口，通过rpcbind 设定。
+7、执行命令：sudo /etc/init.d/nfs-kernel-server restart 重启nfs服务。
+8、挂载指令：
+sudo mount -t nfs 192.168.111.128:/home/jacobxu/nfs-jacoxu /nfs-jacoxu-node001/
+到任意一台服务器中执行挂载指令，则可以将指定ip服务器上的共享路径，挂载到本地。
+注：nfs只是一种文件目录共享模式，以本地方式进行访问。而HDFS是一种分布式的文件系统，能够在服务器中进行数据的负载均衡。
+9、开机自动挂载：
+把 上述指令 sudo mount -t nfs 192.168.111.128:/home/jacobxu/nfs-jacoxu /nfs-jacoxu-node001/ 写到 /etc/rc.local 文件中
+附录：NFS常用参数如下：
+ro 只读访问
+rw 读写访问sync 所有数据在请求时写入共享
+async nfs在写入数据前可以响应请求
+secure nfs通过1024以下的安全TCP/IP端口发送
+insecure nfs通过1024以上的端口发送
+wdelay 如果多个用户要写入nfs目录，则归组写入(默认)
+no_wdelay 如果多个用户要写入nfs目录，则立即写入，当使用async时，无需此设置。
+hide 在nfs共享目录中不共享其子目录
+no_hide 共享nfs目录的子目录
+subtree_check 如果共享/usr/bin之类的子目录时，强制nfs检查父目录的权限(默认)
+no_subtree_check 和上面相对，不检查父目录权限
+all_squash 共享文件的UID和GID映射匿名用户anonymous，适合公用目录。
+no_all_squash 保留共享文件的UID和GID(默认)
+root_squash root用户的所有请求映射成如anonymous用户一样的权限(默认)
+no_root_squas root用户具有根目录的完全管理访问权限
+anonuid=xxx 指定nfs服务器/etc/passwd文件中匿名用户的UID
+anongid=xxx 指定nfs服务器/etc/passwd文件中匿名用户的GID
+
+来自 <http://jacoxu.com/?p=980> 

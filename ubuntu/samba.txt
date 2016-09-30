@@ -1,0 +1,22 @@
+Ubuntu 14.04 smba服务器的配置??
+SMB
+（Server Messages Block，信息服务块）是为了在ubuntu虚拟机与windows之间共享文件。
+具体配置过程如下：
+（1）安装SMB应用
+sudo ?apt-get install samba?
+sudo ?apt-get ?install cifs-utils?
+不知道是不是ubuntu已经默认安装了samba，但是在/etc/init.d中找不到启动项，所以就只能再重新装一遍了。
+（2）添加samba用户
+? ? ? ? ?sudo useradd smb ? ? ?//添加smb系统用户
+?sudo smbpasswd -a smb ? ? ? ?//修改密码
+（3）修改配置文件
+修改/etc/samba/smb.conf，添加：?
+? ? ? ? ?[root] comment = Root Directories?
+? ? ? ? ?browseable = yes?
+? ? ? ? ?writeable = yes?
+? ? ? ? ?path = /valid users = smb（用户名）
+（4）重启samba服务器
+? ? ? ? ?sudo /etc/init.d/samba restart
+? 到这一步，服务器配置已经完成，下面就可以在Windows上访问这台服务上的资料了
+
+来自 <http://blog.163.com/liuxin_arm/blog/static/18329142320143185735432/> 
