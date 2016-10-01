@@ -4,7 +4,7 @@
 
 function cfind()
 {
-	find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -type f \( -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) -print0 | xargs -0 grep --color -n "$@" 
+	find . -name .repo -prune -o -name .git -prune -o -name out -prune -o -type f \( -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) -print0 | xargs -0 grep --color -n "$@"
 }
 
 
@@ -16,3 +16,46 @@ function ctags-kernel()
 }
 
 
+#################### RAMDUMP PARSER ####################
+
+function rdp64()
+{
+	dumppath=$1
+	chipset=$2
+
+	VMLINUX=${dumppath}/vmlinux
+	OUTPUT=${dumppath}/parser
+
+	parser_path=/home/ranger/tools/caf-tools/linux-ramdump-parser-v2
+	PARSER=${parser_path}/ramparse.py
+
+	prefix=aarch64-linux-gnu-
+	toolchain_path=/home/ranger/toolchain/gcc-linaro-5.3.1-2016.05-x86_64_aarch64-linux-gnu/bin
+	GDB=${toolchain_path}/${prefix}gdb
+	NM=${toolchain_path}/${prefix}nm
+	OBJDUMP=${toolchain_path}/${prefix}objdump
+
+	echo "python ${PARSER} -v ${VMLINUX} -o ${OUTPUT} -g ${GDB} -n ${NM} -j ${OBJDUMP} -a ${dumppath} --64-bit -x --force-hardware ${chipset}"
+	python ${PARSER} -v ${VMLINUX} -o ${OUTPUT} -g ${GDB} -n ${NM} -j ${OBJDUMP} -a ${dumppath} --64-bit -x --force-hardware ${chipset}
+}
+
+function rdp32()
+{
+	dumppath=$1
+	chipset=$2
+
+	VMLINUX=${dumppath}/vmlinux
+	OUTPUT=${dumppath}/parser
+
+	parser_path=/home/ranger/tools/caf-tools/linux-ramdump-parser-v2
+	PARSER=${parser_path}/ramparse.py
+
+	prefix=arm-linux-gnueabi-
+	toolchain_path=/home/ranger/toolchain/gcc-linaro-5.3.1-2016.05-x86_64_arm-linux-gnueabi/bin
+	GDB=${toolchain_path}/${prefix}gdb
+	NM=${toolchain_path}/${prefix}nm
+	OBJDUMP=${toolchain_path}/${prefix}objdump
+
+	echo "python ${PARSER} -v ${VMLINUX} -o ${OUTPUT} -g ${GDB} -n ${NM} -j ${OBJDUMP} -a ${dumppath} --32-bit -x --force-hardware ${chipset}"
+	python ${PARSER} -v ${VMLINUX} -o ${OUTPUT} -g ${GDB} -n ${NM} -j ${OBJDUMP} -a ${dumppath} --32-bit -x --force-hardware ${chipset}
+}
