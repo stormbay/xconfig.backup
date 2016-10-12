@@ -15,6 +15,17 @@ function ctags-kernel()
 	ctags -R -f .tags --exclude=alpha --exclude=arc --exclude=avr32 --exclude=blackfin --exclude=c6x --exclude=cris --exclude=frv --exclude=hexagon --exclude=ia64 --exclude=Kconfi --exclude=m32r --exclude=m68k --exclude=metag --exclude=microblaze --exclude=mips --exclude=mn10300 --exclude=openrisc --exclude=parisc --exclude=powerpc --exclude=s390 --exclude=score --exclude=sh --exclude=sparc --exclude=tile --exclude=um --exclude=unicore32 --exclude=x86 --exclude=xtensa $@
 }
 
+#################### RAMDUMP PARSER ####################
+
+function f5start()
+{
+	sudo f5fpc -s -u xinsu -s -x -t https://globalvpn.ras.qualcomm.com
+}
+
+function f5stop()
+{
+	sudo f5fpc -o
+}
 
 #################### RAMDUMP PARSER ####################
 
@@ -27,6 +38,7 @@ function rdp64()
 	OUTPUT=${dumppath}/parser
 
 	parser_path=/home/ranger/tools/caf-tools/linux-ramdump-parser-v2
+#	parser_path=/home/ranger/tools/tools.linux-bug.git/linux-ramdump-parser-v2
 	PARSER=${parser_path}/ramparse.py
 
 	prefix=aarch64-linux-gnu-
@@ -48,6 +60,7 @@ function rdp32()
 	OUTPUT=${dumppath}/parser
 
 	parser_path=/home/ranger/tools/caf-tools/linux-ramdump-parser-v2
+#	parser_path=/home/ranger/tools/tools.linux-bug.git/linux-ramdump-parser-v2
 	PARSER=${parser_path}/ramparse.py
 
 	prefix=arm-linux-gnueabi-
