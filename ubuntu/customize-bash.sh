@@ -19,12 +19,17 @@ function ctags-kernel()
 
 function f5start()
 {
-	sudo f5fpc -s -u xinsu -s -x -t https://globalvpn.ras.qualcomm.com
+	sudo f5fpc -s -u xinsu -t https://globalvpn.ras.qualcomm.com
 }
 
 function f5stop()
 {
 	sudo f5fpc -o
+}
+
+function f5info()
+{
+	f5fpc --info
 }
 
 #################### RAMDUMP PARSER ####################
