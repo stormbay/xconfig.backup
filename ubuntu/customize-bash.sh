@@ -1,5 +1,28 @@
 #!/usr/bin/bash
 
+
+######################### ALIAS #########################
+
+alias ll='ls -lF'
+alias lla='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+######################## EXPORT #########################
+
+export PATH=~/bin:$PATH
+export PATH=$PATH:~/toolchain/gcc-linaro-5.3.1-2016.05-x86_64_arm-linux-gnueabi/bin
+export PATH=$PATH:~/toolchain/gcc-linaro-5.3.1-2016.05-x86_64_aarch64-linux-gnu/bin
+export PATH=$PATH:~/tools/linux-bug/share/redhat-crash
+
+export T32SYS=/opt/t32
+#export T32SYS=/opt/t32mini
+export T32TMP=/tmp
+export T32ID=T32
+export PATH=$PATH:/opt/t32/bin/pc_linux64
+
+export OPENGROK_INSTANCE_BASE=~/tools/opengrok/var
+
 ######################## COMMAND ########################
 
 function cfind()
