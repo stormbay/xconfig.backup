@@ -1,0 +1,25 @@
+
+1. Generate private key file "priv.pem"
+	
+	openssl genrsa -out priv.pem 1024
+
+2. Generate public key file "pub.pem"
+
+	openssl rsa -in priv.pem -pubout -out pub.pem
+
+3. Generate digest of source file as "digest.txt"
+	
+	openssl dgst -sha256 <source file> > digest.txt
+
+4. Generate the signature of digest file
+
+	openssl dgst -sign priv.pem -out sign.txt digest.txt
+
+5. Verify the signature by private key
+
+	openssl dgst -prverify priv.pem -signature sign.txt digest.txt
+
+6. Verify the signature by public key
+
+	openssl dgst -verify pub.pem -signature sign.txt digest.txt
+
