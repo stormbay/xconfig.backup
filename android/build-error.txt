@@ -1,0 +1,20 @@
+[  0% 154/53952] Ensure Jack server is installed and started
+Jack server already installed in "/home/ranger/.jack-server"
+Server is already running
+[  0% 155/53952] Building with Jack: out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/with-local/classes.dex
+FAILED: /bin/bash out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/with-local/classes.dex.rsp
+Out of memory error (version 1.2-rc4 'Carnac' (298900 f95d7bdecfceb327f9d201a1348397ed8a843843 by android-jack-team@google.com)).
+GC overhead limit exceeded.
+Try increasing heap size with java option '-Xmx<size>'.
+Warning: This may have produced partial or corrupted output.
+ninja: build stopped: subcommand failed.
+make: *** [ninja_wrapper] Error 1
+
+#### make failed to build some targets (10:37 (mm:ss)) ####
+
+
+======================== SOLUTION ========================
+
+export JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4g"
+./prebuilts/sdk/tools/jack-admin kill-server
+./prebuilts/sdk/tools/jack-admin start-server 
